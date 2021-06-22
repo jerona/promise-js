@@ -1,8 +1,10 @@
-/*
-promise con then and catch
-se simula varias promesas en la 
-que en una de ellas no se encuentra una persona
-con el dni 000003D
+/* 
+ejemplo promise con then controlando
+errores con then en este caso
+no importa que la peticiones den fallos
+de los clientes en cuestión ya que se 
+pretende seguir la ejecucion de los que se haga 
+correctamente pasando de los que den errores.
 */
 
 function getDataPeopleRepository(dni) {
@@ -11,6 +13,7 @@ function getDataPeopleRepository(dni) {
         { id: 1, dni: '000001B', name: 'people2' },
         { id: 2, dni: '000002C', name: 'people3' }
     ];
+
     const peoplesFound = datasPeople.filter((people) => people.dni === dni);
     return peoplesFound && peoplesFound.length > 0 ? peoplesFound[0] : null;
 }
@@ -20,8 +23,9 @@ function getPeople(dni) {
         (resolve, reject) => {
             setTimeout(() => {
                 const peopleFound = getDataPeopleRepository(dni);
+
                 if (peopleFound) resolve(peopleFound);
-                else reject('No existen persona con ese dni');
+                else reject('No existen persona con el dni: ' + dni);
             }, 5000);
         });
     return promise;
@@ -30,31 +34,23 @@ function getPeople(dni) {
 function getPeoplePainted() {
     console.log('0º: ', new Date().toUTCString());
 
-    getPeople('000000A')
+    getPeople('000000B') // DNI invalido
         .then((people1) => {
             console.log('1º: ', new Date().toUTCString());
-            console.log(people1.dni + ' ', people1);
-            return getPeople('000001B');
-        })
-        .then((people2) => {
+            return people1.dni + ' ', people1;
+        }, ((reject) => '1º error: ' + reject))
+        .then(respuesta => {
             console.log('2º: ', new Date().toUTCString());
-            console.log(people2.dni + ' ', people2);
-            return getPeople('000003D'); // no existe people, por lo que va directo al catch.
-        })
-        .then((people3) => {
-            // no entrará aquí por que people 2 falla.
+            console.log('!la respuesta: ', respuesta);
+            return getPeople('000001B') // DNI Valido
+        }).then((people2) => {
             console.log('3º: ', new Date().toUTCString());
-            console.log(people3.dni + ' ', people3);
-        })
-        .then((people4) => {
-            // no entrará aquí por que people 2 falla.
+            return people2.dni + ' ', people2
+        }, ((reject) => '3º error:' + reject))
+        .then(respuesta => {
             console.log('4º: ', new Date().toUTCString());
-            console.log(people4.dni + ' ', people4);
-            return getPeople('000001B');
-        })
-        .catch((error) => { console.error('error visualizado: ', error) });
-
-    console.log('cargando las promesas espere...');
+            console.log('!!la respuesta: ', respuesta);
+        });
 }
 
 getPeoplePainted();

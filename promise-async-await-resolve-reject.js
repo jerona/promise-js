@@ -23,8 +23,8 @@ function getPeople(dni) {
             setTimeout(() => {
                 const peopleFound = getDataPeopleRepository(dni);
 
-                if (peopleFound) resolve(getDataPeopleRepository(dni));
-                else reject(new Error('No existen persona con el dni: ', dni));
+                if (peopleFound) resolve(peopleFound);
+                else reject(new Error('No existen persona con el dni: ' + dni));
             }, 5000);
         });
     return promise;
